@@ -1,0 +1,89 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<stdio.h>
+#define MAX_NAME 64
+
+typedef struct _osoba
+{
+	char ime[MAX_NAME];
+	char prezime[MAX_NAME];
+	int godinaRodenja;
+	struct _osoba* next;
+}osoba;
+
+typedef osoba* poz;
+
+
+poz dodajPocetak(poz headNext)
+{
+	int i = 0,n=0;
+
+	printf("Koliko osoba zelite upisati na pocetak: ");
+	scanf("%d", &n);
+	poz novi = (poz)malloc(n*sizeof(osoba));
+
+	for (i = 0; i < n; i++)
+	{
+		printf("\nUnesi ime osobe: ");
+		scanf("%s", (novi+i)->ime);
+		printf("\nUnesi prezime osobe: ");
+		scanf("%s", (novi + i)->prezime);
+		printf("\nUnesi godinu rodenja osobe: ");
+		scanf("%d", &(novi + i)->godinaRodenja);
+
+		(novi + i)->next = headNext;
+		headNext = (novi + i);
+
+	}
+	return headNext;
+}
+
+void ispis(poz headNext)
+{
+	while (headNext != NULL)
+	{
+		printf("\n %s %s %d.", headNext->ime, headNext->prezime, headNext->godinaRodenja);
+		headNext = headNext->next;
+	}
+}
+
+poz dodajKraj(poz headNext)
+{
+	int i = 0, n = 0;
+
+	poz novi = (poz)malloc(n * sizeof(osoba));
+
+	while (headNext!= NULL)
+	{
+		headNext=headNext->next;
+
+	}
+	
+	printf("\nUnesi ime osobe: ");
+	scanf("%s", (novi + i)->ime);
+	printf("\nUnesi prezime osobe: ");
+	scanf("%s", (novi + i)->prezime);
+	printf("\nUnesi godinu rodenja osobe: ");//ne radi
+	scanf("%d", &(novi + i)->godinaRodenja);
+
+	novi->next = NULL;
+	headNext = novi;
+
+	return headNext;
+
+}
+
+int main()
+{
+	osoba head;
+	int a;
+
+	head.next = NULL;
+	
+	head.next = dodajKraj(head.next);
+
+	ispis(head.next);
+
+	scanf("%d", &a);
+
+	return 0;
+}
