@@ -3,15 +3,15 @@
 #include<string.h>
 #define MAX_NAME 64
 
+struct _osoba;
+typedef struct _osoba* poz;
 typedef struct _osoba
 {
 	char ime[MAX_NAME];
 	char prezime[MAX_NAME];
 	int godinaRodenja;
-	struct _osoba* next;
+	poz next;
 }osoba;
-
-typedef osoba* poz;
 
 
 int dodajPocetak(const poz head)
