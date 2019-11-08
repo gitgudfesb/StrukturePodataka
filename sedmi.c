@@ -12,7 +12,7 @@ typedef struct _list
 
 typedef list* poz;
 
-int dodajNaStog(poz p, char *c) {
+int dodajNaStog(poz p, char c[IZRAZ_MAX]) {
 
 	poz q = (poz)malloc(sizeof(list));
 
@@ -71,15 +71,11 @@ int ucitajIzDatoteke(const char *datoteka,const poz p){
 		return -1;
 	}
 
-	fscanf(f, "%s", izraz);
 
-	c=izraz[i];
-	while(c != '\0')
+	while(!feof(f))
 	{
-
-		dodajNaStog(p, izraz[i]]);
-		i++;
-		c=izraz[i];
+		fscanf(f,"%s",izraz);//greska, ne moze cilo vrime na isti niz stavljat
+		dodajNaStog(p,izraz);
 	}
 
 }
