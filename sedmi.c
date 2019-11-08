@@ -1,22 +1,23 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
 #include<stdlib.h>
-#define IZRAZ_MAX 256
+#include<string.h>
+#define STRING_MAX 10
 
 
 typedef struct _list
 {
-	char *element;
+	char element[STRING_MAX];
 	struct _list* next;
 }list;
 
 typedef list* poz;
 
-int dodajNaStog(poz p, char c[IZRAZ_MAX]) {
+int dodajNaStog(poz p, char c[STRING_MAX]) {
 
 	poz q = (poz)malloc(sizeof(list));
 
-	q->element = c;
+	strcpy(q->element, c);
 
 	q->next = p->next;
 
@@ -46,10 +47,10 @@ int pop(poz p) {
 int ispis(const poz p)
 {
 	poz elementListe = p;
-	elementListe = elementListe->next;//da ne ispisuje head(dummy) element
+	elementListe = elementListe->next;
 	while (elementListe != NULL)
 	{
-		printf("%c, ", elementListe->element);
+		printf("%s, ", elementListe->element);
 		elementListe = elementListe->next;
 	}
 
@@ -58,24 +59,26 @@ int ispis(const poz p)
 
 
 
-int ucitajIzDatoteke(const char *datoteka,const poz p){
+int ucitajIzDatoteke(const char *datoteka, const poz p) {
 
-	char izraz[IZRAZ_MAX], c;
+	char izraz[STRING_MAX], c;
 	int i = 0;
 	FILE *f = fopen(datoteka, "r");
 
-	
-	if(f ==NULL)
+
+	if (f == NULL)
 	{
 		printf("Dogodila se greska prilikom otvaranja datoteke!");
 		return -1;
 	}
 
 
-	while(!feof(f))
+	while (!feof(f))
 	{
-		fscanf(f,"%s",izraz);//greska, ne moze cilo vrime na isti niz stavljat
-		dodajNaStog(p,izraz);
+
+		izraz[0] = '\0';
+		fscanf(f, "%s", izraz);//greska, ne moze cilo vrime na isti niz stavljat
+		dodajNaStog(p, izraz);
 	}
 
 }
