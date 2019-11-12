@@ -11,12 +11,20 @@ typedef struct _polinom {
 	pok next;
 } polinom;
 
+pok stvoriElementListe(void);
+int ispis(const pok);
+int ZbrajaISortira(const pok, const int , const int );
+int UnosiSort(const pok , const char*);
+pok zbrojPolinoma(const pok, const pok, const pok);
+pok produktPolinoma(const pok , const pok, const pok);
+
 pok stvoriElementListe()
 {
 	pok stvoreniElement = (pok)malloc(sizeof(polinom));
 	if (stvoreniElement == NULL)
 	{
 		printf("Greska u funkciji stvoriElement.\n");
+		return NULL;
 	}
 	else
 	{
