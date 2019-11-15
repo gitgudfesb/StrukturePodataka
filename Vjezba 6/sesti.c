@@ -2,15 +2,16 @@
 #include<stdio.h>
 
 
+typedef struct _list* poz;
+
 typedef struct _list
 {
 	int element;
-	struct _list* next;
+	poz next;
 }list;
 
-typedef list* poz;
 
-int pushStog(poz p) {
+int pushStog( poz p) {
 
 	int broj = ((rand() % 91) + 10);
 	poz q = (poz)malloc(sizeof(list));
