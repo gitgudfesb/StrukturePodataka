@@ -1,17 +1,31 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 
 typedef struct CvorStabla* stablo;
 
 typedef struct CvorStabla
 {
 	stablo L;
+	char ime[32];//ime dodato samo da ima nesto napisat god funkcije trazi
 	stablo D;
 	int Element;
 };
 
-stablo dodaj(const int  onajKojegDodajemo, stablo S)
+stablo Trazi(const int trazeniElement, stablo S)
+{
+	if (S != NULL)
+	{
+		if (S->Element == trazeniElement) return S;
+		else if (S->Element > trazeniElement) return Trazi(trazeniElement, S->L);
+		else return Trazi(trazeniElement, S->D);
+	}
+	else return NULL;
+
+}
+
+stablo dodaj(const int  onajKojegDodajemo, stablo S, char imeUnos[32])
 {
 	if (S == NULL)
 	{
@@ -20,6 +34,7 @@ stablo dodaj(const int  onajKojegDodajemo, stablo S)
 		else
 		{
 			S->Element = onajKojegDodajemo;
+			strcpy(S->ime, imeUnos);
 			S->L = NULL;
 			S->D = NULL;
 			printf("\nUspjesno dodan element stabla. ");
@@ -28,16 +43,69 @@ stablo dodaj(const int  onajKojegDodajemo, stablo S)
 	}
 	else if (onajKojegDodajemo < S->Element)
 	{
-		S->L = dodaj(onajKojegDodajemo, S->L);
+		S->L = dodaj(onajKojegDodajemo, S->L,imeUnos);
 	}
 	else if(onajKojegDodajemo > S->Element)
 	{
-		S->D = dodaj(onajKojegDodajemo, S->D);
+		S->D = dodaj(onajKojegDodajemo, S->D,imeUnos);
 	}
 	else printf("Vec postoji taj element!");
 
 	return S;
 }
+
+
+int ispis(stablo S)
+{
+	if (S != NULL)
+	{
+		ispis(S->L);
+		printf("%d ", S->Element);
+		ispis(S->D);
+
+		return 0;
+	}
+}
+
+int main()
+{
+	stablo trazeni = NULL, Korijen = NULL;
+	char imeUnos[32];
+	int i=9,el=0;
+
+	while (i != 0)
+	{
+		printf("\nUnesi 1 za unos elementa u stablo. \n");
+		printf("unesi 2 za ispis stabla.\n");
+		printf("unesi 3 za pretrazivanje stabla.\n");
+		printf("Unesite 0 za Kraj.\n");
+		scanf("%d", &i);
+		system("cls");
+		switch (i)
+		{
+			case 1:
+				printf("\nUnesite element i ime kojeg zelite dodati stablu:");
+				scanf("%d ", &el);
+				scanf("%s", imeUnos);
+				Korijen=dodaj(el, Korijen,imeUnos);
+				break;
+			case 2:
+				ispis(Korijen);
+				break;
+			case 3:
+				printf("\nUnesite vrijednost elementa kojeg trazite:");
+				scanf("%d",&el);
+				trazeni=Trazi(el, Korijen);
+				if (trazeni != NULL) printf("\nPronađen je element vrijednosti %d, ime mu je %s.\n", trazeni->Element, trazeni->ime);
+			default:
+				break;
+		}
+	}
+
+	return 0;
+
+}
+
 
 
 int ispis(stablo S)
