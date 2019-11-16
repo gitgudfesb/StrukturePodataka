@@ -1,0 +1,82 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct CvorStabla* stablo;
+
+typedef struct CvorStabla
+{
+	stablo L;
+	stablo D;
+	int Element;
+};
+
+stablo dodaj(const int  onajKojegDodajemo, stablo S)
+{
+	if (S == NULL)
+	{
+		S = (stablo)malloc(sizeof(stablo));
+		if (S == NULL) printf("Greska u funkciji 'dodaj' !!!\n");
+		else
+		{
+			S->Element = onajKojegDodajemo;
+			S->L = NULL;
+			S->D = NULL;
+			printf("\nUspjesno dodan element stabla. ");
+		}
+
+	}
+	else if (onajKojegDodajemo < S->Element)
+	{
+		S->L = dodaj(onajKojegDodajemo, S->L);
+	}
+	else if(onajKojegDodajemo > S->Element)
+	{
+		S->D = dodaj(onajKojegDodajemo, S->D);
+	}
+	else printf("Vec postoji taj element!");
+
+	return S;
+}
+
+
+int ispis(stablo S)
+{
+	if (S != NULL)
+	{
+		ispis(S->L);
+		printf("%d ", S->Element);
+		ispis(S->D);
+
+		return 0;
+	}
+}
+
+int main()
+{
+	stablo Korijen=NULL;
+	int i=9,el=0;
+
+	while (i != 0)
+	{
+		printf("\nUnesi 1 za unos elementa u stablo. \n");
+		printf("unesi 2 za ispis stabla.\n");
+		printf("Unesite 0 za Kraj.\n");
+		scanf("%d", &i);
+		system("cls");
+		switch (i)
+		{
+			case 1:
+				printf("\nUnesite element kojeg zelite dodati stablu:");
+				scanf("%d", &el);
+				Korijen=dodaj(el, Korijen);
+				break;
+			case 2:
+				ispis(Korijen);
+				break;
+			default:
+				break;
+		}
+	}
+
+	return 0;
