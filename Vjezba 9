@@ -3,15 +3,14 @@
 #include<stdlib.h>
 #include<string.h>
 
-typedef struct CvorStabla* stablo;
+typedef struct _CvorStabla* stablo;
 
-typedef struct CvorStabla
+typedef struct _CvorStabla
 {
 	stablo L;
-	char ime[32];//ime dodato samo da ima nesto napisat god funkcije trazi
 	stablo D;
 	int Element;
-};
+}CvorStabla;
 
 stablo Trazi(const int trazeniElement, stablo S)
 {
@@ -25,16 +24,66 @@ stablo Trazi(const int trazeniElement, stablo S)
 
 }
 
-stablo dodaj(const int  onajKojegDodajemo, stablo S, char imeUnos[32])
+stablo TraziNajmanjeg(stablo S)
+{
+	if (S != NULL)
+	{
+		if (S->L == NULL) return S;
+		else return TraziNajmanjeg(S->L);
+	}
+	else return NULL;
+}
+
+stablo Brisi(const int elZaBrisat, stablo S)
+{
+	stablo temp;
+	if (S != NULL)
+	{
+		if (elZaBrisat > S->Element)
+		{
+			S->D = Brisi(elZaBrisat, S->D);
+		}
+		else if (elZaBrisat < S->Element)
+		{
+			S->L = Brisi(elZaBrisat, S->L);
+		}
+		else
+		{
+			if (S->L != NULL && S->D != NULL)//nasli smo ga,ima dvoje dice, onda zamjenjuje toga sa najmanjin sa desne strane 
+			{
+				temp = TraziNajmanjeg(S->D);
+				S->Element = temp->Element;//zamjena sa najmanjin sa desne
+				S->D = Brisi(S->Element, S->D);//brise toga najmanjeg sa desne kojeg je priselia na misto ovog
+			}
+			else//nasli ga i ima jednu granu ili nijednu
+			{
+				temp = S;
+				if (S->L == NULL)
+				{
+					S = S->D;
+				}
+				else
+				{
+					S = S->L;
+				}
+				free(temp);
+			}
+		}
+	}
+	else printf("Nema tog elementa!");
+
+	return S;
+}
+
+stablo dodaj(const int  onajKojegDodajemo, stablo S)
 {
 	if (S == NULL)
 	{
-		S = (stablo)malloc(sizeof(stablo));
+		S = (stablo)malloc(sizeof(CvorStabla));
 		if (S == NULL) printf("Greska u funkciji 'dodaj' !!!\n");
 		else
 		{
 			S->Element = onajKojegDodajemo;
-			strcpy(S->ime, imeUnos);
 			S->L = NULL;
 			S->D = NULL;
 			printf("\nUspjesno dodan element stabla. ");
@@ -43,11 +92,11 @@ stablo dodaj(const int  onajKojegDodajemo, stablo S, char imeUnos[32])
 	}
 	else if (onajKojegDodajemo < S->Element)
 	{
-		S->L = dodaj(onajKojegDodajemo, S->L,imeUnos);
+		S->L = dodaj(onajKojegDodajemo, S->L);
 	}
-	else if(onajKojegDodajemo > S->Element)
+	else if (onajKojegDodajemo > S->Element)
 	{
-		S->D = dodaj(onajKojegDodajemo, S->D,imeUnos);
+		S->D = dodaj(onajKojegDodajemo, S->D);
 	}
 	else printf("Vec postoji taj element!");
 
@@ -65,86 +114,51 @@ int ispis(stablo S)
 
 		return 0;
 	}
+	else return -1;
 }
 
 int main()
 {
 	stablo trazeni = NULL, Korijen = NULL;
-	char imeUnos[32];
-	int i=9,el=0;
+	int i = 9, el = 0;
 
 	while (i != 0)
 	{
 		printf("\nUnesi 1 za unos elementa u stablo. \n");
 		printf("unesi 2 za ispis stabla.\n");
 		printf("unesi 3 za pretrazivanje stabla.\n");
+		printf("unesi 4 za brisanje elementa iz stabla.\n");
 		printf("Unesite 0 za Kraj.\n");
 		scanf("%d", &i);
-		system("cls");
 		switch (i)
 		{
-			case 1:
-				printf("\nUnesite element i ime kojeg zelite dodati stablu:");
-				scanf("%d ", &el);
-				scanf("%s", imeUnos);
-				Korijen=dodaj(el, Korijen,imeUnos);
-				break;
-			case 2:
-				ispis(Korijen);
-				break;
-			case 3:
-				printf("\nUnesite vrijednost elementa kojeg trazite:");
-				scanf("%d",&el);
-				trazeni=Trazi(el, Korijen);
-				if (trazeni != NULL) printf("\nPronađen je element vrijednosti %d, ime mu je %s.\n", trazeni->Element, trazeni->ime);
-			default:
-				break;
+		case 1:
+			printf("\nUnesite element  zelite dodati stablu:");
+			scanf("%d", &el);
+			Korijen = dodaj(el, Korijen);
+			break;
+		case 2:
+			ispis(Korijen);
+			break;
+		case 3:
+			printf("\nUnesite vrijednost elementa kojeg trazite:");
+			scanf("%d", &el);
+			trazeni = Trazi(el, Korijen);
+			if (trazeni != NULL) printf("\nPronađen je element vrijednosti %d.\n", trazeni->Element );
+			break;
+		case 4:
+			printf("\nUnesite vrijednost elementa kojeg brisete:");
+			scanf("%d", &el);
+			ispis(Korijen);
+			printf("\n%d\n", TraziNajmanjeg(Korijen)->Element);
+			Korijen = Brisi(el, Korijen);
+			ispis(Korijen);
+			break;
+		default:
+			break;
 		}
 	}
 
 	return 0;
 
 }
-
-
-
-int ispis(stablo S)
-{
-	if (S != NULL)
-	{
-		ispis(S->L);
-		printf("%d ", S->Element);
-		ispis(S->D);
-
-		return 0;
-	}
-}
-
-int main()
-{
-	stablo Korijen=NULL;
-	int i=9,el=0;
-
-	while (i != 0)
-	{
-		printf("\nUnesi 1 za unos elementa u stablo. \n");
-		printf("unesi 2 za ispis stabla.\n");
-		printf("Unesite 0 za Kraj.\n");
-		scanf("%d", &i);
-		system("cls");
-		switch (i)
-		{
-			case 1:
-				printf("\nUnesite element kojeg zelite dodati stablu:");
-				scanf("%d", &el);
-				Korijen=dodaj(el, Korijen);
-				break;
-			case 2:
-				ispis(Korijen);
-				break;
-			default:
-				break;
-		}
-	}
-
-	return 0;
