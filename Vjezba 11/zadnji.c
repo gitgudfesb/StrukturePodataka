@@ -52,30 +52,43 @@ int usporediImena(char ime1[IME_MAX], char prezime1[IME_MAX], char ime2[IME_MAX]
 	{
 		if (strcmp(ime1, ime2) < 0) return -1;
 		else if (strcmp(ime1, ime2) > 0) return 1;
-		else return 1;//isto ime i prezime pa svjedno, nama u funkciji pase tako da recemo da ide 
+		else return 0;//oba ista skroz
 	}
-	else return 0;
+
 }
-pozicija mjestoUListi(int indeks, pozicija onajkojegUnosimo,const hashTablica h)
+pozicija pronadiPrethodnika(int indeks, pozicija onajkojegUnosimo, const hashTablica h)
 {
 	pozicija prethodni = NULL;
 	pozicija gdjeunijeti = h.niz[indeks - 1];
-	prethodni = gdjeunijeti;
 	while (usporediImena(gdjeunijeti->ime, gdjeunijeti->prezime, onajkojegUnosimo->ime, onajkojegUnosimo->prezime) == -1 && gdjeunijeti != NULL)
 	{
-		prethodni = gdjeunijeti;
+		prethodni = gdjeunijeti;//spremi prethodnu tako da kad izade imamo adresu prethodnog
 		gdjeunijeti = gdjeunijeti->next;
 	}
 
 	return prethodni;
 }
 
+pozicija pronadiElement(int indeks, pozicija trazeni, const hashTablica h)
+{
+	pozicija elementListe = h.niz[indeks - 1];
+	while (usporediImena(elementListe->ime, elementListe->prezime, trazeni->ime, trazeni->prezime) !=0 && elementListe != NULL)
+	{
+		elementListe = elementListe->next;
+	}
+	if (elementListe == NULL) return NULL;
+	else return elementListe;
+
+}
+
+
+
 int unosUTablicu(hashTablica h)
 {
 	int indeks;
 	pozicija unos = (pozicija)malloc(sizeof(Student));
 	pozicija prethodni = (pozicija)malloc(sizeof(Student));
-	if (unos == NULL)
+	if (unos == NULL || prethodni==NULL)
 	{
 		printf("Greska pri alokaciji memorije za unos!!");
 		return -1;
@@ -91,22 +104,29 @@ int unosUTablicu(hashTablica h)
 		scanf("%d", &unos->mb);
 
 		indeks = dajIndeksZaTablicu(unos->prezime, h.brojElemenata);
-		if (h.niz[indeks-1] == NULL)
+		if (h.niz[indeks - 1] == NULL)
 		{
-			h.niz[indeks-1] = unos;
+			h.niz[indeks - 1] = unos;
 			unos->next = NULL;
 			//samo unesi jer je misto na tom indeksu prazno
 		}
 		else
 		{
-			prethodni = mjestoUListi(indeks - 1, unos, h);
-			unos->next = prethodni->next;
-			prethodni->next = unos;
 
+			prethodni = pronadiPrethodnika(indeks, unos, h);
+			if (prethodni == NULL)//trebamo ga umetnit na pocetak liste
+			{
+				prethodni = h.niz[indeks - 1];//prethodni korsitim ko temp, samo se umetne unos na pocetak liste
+				h.niz[indeks - 1] = unos;
+				h.niz[indeks - 1]->next = prethodni;
+			}
+			else
+			{
+				unos->next = prethodni->next;
+				prethodni->next = unos;
+			}
 
 		}
-		// else vec ima neko na tom indeksu, tj imamo vezanu listu, ubesi u nju na odredeno misto po imenu/prezimenu
-
 	}
 }
 
@@ -118,38 +138,35 @@ int ispisiMaticniBroj(const hashTablica h) {
 	printf("Unesite ime i prezime studenta ciji maticni broj trazite: ");
 	scanf("%s %s", student->ime, student->prezime);
 
-	p = mjestoUListi(dajIndeksZaTablicu(student->prezime, h.brojElemenata), student, h);
+	p = pronadiElement(dajIndeksZaTablicu(student->prezime, h.brojElemenata), student, h);
 
-	if (strcmp(p->ime, student->ime) == 0 && strcmp(p->prezime, student->prezime) == 0) {
-
-		printf("Maticni broj studenta je: %d\n", p->mb); //Ako imamo samo jednog u listi, vratit ce njega jer nema prethodnika pa ga ispisujemo
-		return 0;
-	}
-	if (p->next == NULL) {
-		printf("Nije naden student :("); // Ne postoji taj student
+	if (p == NULL)
+	{
+		printf("Nije naden taj student :(!\n");
 		return -1;
 	}
-	else {
-
-		printf("Maticni broj studenta je: %d", p->next->mb); //Ako ih ima vise u listi vraca prethodnika
+	else
+	{
+		printf("Maticni broj studenta je: %d\n", p->mb);
+		return 0;
 	}
 
-	return 0;
 }
 
 int ispisTablice(const hashTablica h) {
 
 	int i = 0;
-
-	for (i = 0; i < h.brojElemenata; i++) 
+	hashListe t = h.niz[i];
+	for (i = 0; i < h.brojElemenata; i++)
 	{
+		t = h.niz[i];
 		printf("%d. redak tablice: ", i);
-		while (h.niz[i] != NULL) 
+		while (t != NULL)
 		{
 
-			printf("\t%d %s %s", h.niz[i]->mb, h.niz[i]->ime, h.niz[i]->prezime);
-			
-			h.niz[i] = h.niz[i]->next;
+			printf("\t%d %s %s", t->mb, t->ime, t->prezime);
+
+			t = t->next;
 
 		}
 
@@ -168,8 +185,8 @@ int main()
 	for (i = 0; i < 11; i++)
 	{
 		nova->niz[i] = NULL;
-		
-	
+
+
 	}
 
 	i = 9;
@@ -194,11 +211,7 @@ int main()
 			break;
 		}
 
-
-
-
-
 	}
-	//triba menu napravit
+
 	return 0;
 }
