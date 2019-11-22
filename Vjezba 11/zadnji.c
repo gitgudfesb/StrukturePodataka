@@ -60,7 +60,7 @@ pozicija pronadiPrethodnika(int indeks, pozicija onajkojegUnosimo, const hashTab
 {
 	pozicija prethodni = NULL;
 	pozicija gdjeunijeti = h.niz[indeks - 1];
-	while (usporediImena(gdjeunijeti->ime, gdjeunijeti->prezime, onajkojegUnosimo->ime, onajkojegUnosimo->prezime) == -1 && gdjeunijeti != NULL)
+	while (gdjeunijeti != NULL && usporediImena(gdjeunijeti->ime, gdjeunijeti->prezime, onajkojegUnosimo->ime, onajkojegUnosimo->prezime) == -1 )
 	{
 		prethodni = gdjeunijeti;//spremi prethodnu tako da kad izade imamo adresu prethodnog
 		gdjeunijeti = gdjeunijeti->next;
@@ -72,7 +72,7 @@ pozicija pronadiPrethodnika(int indeks, pozicija onajkojegUnosimo, const hashTab
 pozicija pronadiElement(int indeks, pozicija trazeni, const hashTablica h)
 {
 	pozicija elementListe = h.niz[indeks - 1];
-	while (usporediImena(elementListe->ime, elementListe->prezime, trazeni->ime, trazeni->prezime) !=0 && elementListe != NULL)
+	while (elementListe != NULL  && usporediImena(elementListe->ime, elementListe->prezime, trazeni->ime, trazeni->prezime) !=0 )
 	{
 		elementListe = elementListe->next;
 	}
