@@ -155,21 +155,21 @@ int odabirFunkcije( stablo direktorij, pok mjesto) {
 	while (i != 0)
 	{
 
-		 c =  odrediPolozaj(mjesto);
-		 strcpy(pol, c);
+		c = odrediPolozaj(mjesto);
+		strcpy(pol, c);
 
-		printf("%s>",pol);
+		printf("%s>", pol);
 		scanf("%s", naredba);
 		if (strcmp(naredba, "dir") == 0) {
 
 			i = listaDirektorija(direktorij);
 
 		}
-		else if(strcmp(naredba, "exit") == 0)
+		else if (strcmp(naredba, "exit") == 0)
 		{
 			return 0;
 		}
-		else if (strcmp(naredba, "help") == 0) 
+		else if (strcmp(naredba, "help") == 0)
 		{
 
 			printf("\ncd\t\tDisplays the name of or changes the current directory.\ncls\t\tclears the screen.\ndir\t\tDisplays a list of subdirectories in a directory.\nexit\t\tQuits the strukture program (command interpreter)\nhelp\t\tProvides Help information for Windows commands.\nmd\t\tCreates a directory.\nstart\t\tStarts a new window instance of program.\n");
@@ -185,27 +185,33 @@ int odabirFunkcije( stablo direktorij, pok mjesto) {
 			system("cls");
 			i = 1;
 		}
-		else if (strcmp(naredba, "md") != 0 && strcmp(naredba, "cd") != 0) 
+		else if (strcmp(naredba, "md") != 0 && strcmp(naredba, "cd") != 0 && strcmp(naredba, "git") != 0)
 		{
 			i = 11;
 		}
-		else{
+		else {
 			scanf("%s", naziv);
 		}
 
 
-		 if (strcmp(naredba, "md") == 0)
+		if (strcmp(naredba, "md") == 0)
 		{
 			i = dodajDirektorij(naziv, direktorij);
 		}
 		else if (strcmp(naredba, "cd") == 0) {
 
-			 if (strcmp(naziv, "..") == 0) {
-				 direktorij = pop(mjesto);
-			 }
-			 else {
-				 direktorij = minjajDirektorij(direktorij, mjesto, naziv);
-			 }
+			if (strcmp(naziv, "..") == 0) {
+				direktorij = pop(mjesto);
+			}
+			else {
+				direktorij = minjajDirektorij(direktorij, mjesto, naziv);
+			}
+			i = 1;
+
+		}
+		else if (strcmp(naredba, "git") == 0 && strcmp(naziv, "gud") == 0) {
+
+			ShellExecute(NULL, "open", "https://github.com/gitgudfesb/StrukturePodataka", NULL, NULL, SW_SHOWNORMAL);
 			i = 1;
 
 		}
