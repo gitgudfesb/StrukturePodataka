@@ -126,9 +126,6 @@ int postfiksRacun(const char *datoteka, const poz p)
 		br = 0;
 	}
 
-	//Triba dodat na stog rezultat
-	//Radi samo za jednu op
-
 	ispis(p);
 }
 
